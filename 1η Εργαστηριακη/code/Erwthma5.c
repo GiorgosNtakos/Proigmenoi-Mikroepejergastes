@@ -1,18 +1,17 @@
-volatile unsigned int *Uart_DR = (unsigned int *)0x101f1000;
+ /*
+ * Erwthma 5 - A = B + C, store A, B, C in memory
+ */
 
-void _start() {
-	
-	//Setting value of B=23
-	
-	*Uart_DR = 23;
-	Uart_DR = Uart_DR+1;
-	
-	//Setting value of C=14
-	
-	*Uart_DR = 14;
-	Uart_DR = Uart_DR+1;
-	
-	*Uart_DR = *(Uart_DR-1)+*(Uart_DR-2);
+#include <stdint.h>
 
-while (1) ;
+#define BASE_ADDR 0x00300000u
+
+volatile uint32_t * const base = (volatile uint32_t *)BASE_ADDR;
+
+void _start(void) {
+    base[1] = 23;                  // B
+    base[2] = 14;                  // C
+    base[0] = base[1] + base[2];   // A (st? base[0])
+
+    while (1) { }
 }

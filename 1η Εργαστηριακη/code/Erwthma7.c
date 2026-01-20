@@ -1,39 +1,36 @@
-volatile unsigned int *  Uart_DR = (unsigned int *)0x101f1000;
+/*
+ * Erwthma 7 - y = sum_{k=1..10} (a_k * b_k)
+ * Store y, a_k, b_k in consecutive memory locations
+ */
 
-void _start() {
-	
-	int i;
-	
-	//Setting values of Ak
-	
-	*(Uart_DR+1)=4;
-	*(Uart_DR+2)=3;
-	*(Uart_DR+3)=2;
-	*(Uart_DR+4)=5;
-	*(Uart_DR+5)=3;
-	*(Uart_DR+6)=2;
-	*(Uart_DR+7)=2;
-	*(Uart_DR+8)=4;
-	*(Uart_DR+9)=1;
-	*(Uart_DR+10)=2;
-	
-	//Setting values of Bk
-	
-	*(Uart_DR+11)=2;
-	*(Uart_DR+12)=3;
-	*(Uart_DR+13)=3;
-	*(Uart_DR+14)=2;
-	*(Uart_DR+15)=5;
-	*(Uart_DR+16)=2;
-	*(Uart_DR+17)=6;
-	*(Uart_DR+18)=2;
-	*(Uart_DR+19)=3;
-	*(Uart_DR+20)=2;
-	
-for (i=1;i<=10;i++)
-{
-	*Uart_DR=*Uart_DR+(*(Uart_DR+i)**(Uart_DR+i+10));
-}
+#include <stdint.h>
 
-while (1) ;
+#define BASE_ADDR 0x101F1000u
+
+volatile uint32_t * const base = (volatile uint32_t *)BASE_ADDR;
+
+void _start(void) {
+    uint32_t k;
+
+    // Example values (βάλε εδώ τις τιμές που θες/σου ζητάνε)
+    uint32_t a[10] = {4,3,2,5,3,2,2,5,2,6};
+    uint32_t b[10] = {5,2,6,2,3,2,1,4,2,3};
+
+    // Αποθήκευση a_k σε base[1..10]
+    for (k = 1; k <= 10; k++) {
+        base[k] = a[k-1];
+    }
+
+    // Αποθήκευση b_k σε base[11..20]
+    for (k = 1; k <= 10; k++) {
+        base[10 + k] = b[k-1];
+    }
+
+    // Υπολογισμός y στο base[0]
+    base[0] = 0;
+    for (k = 1; k <= 10; k++) {
+        base[0] += base[k] * base[10 + k];   // ΠΟΛΛΑΠΛΑΣΙΑΣΜΟΣ με *
+    }
+
+    while (1) { }
 }

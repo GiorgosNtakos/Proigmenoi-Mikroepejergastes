@@ -1,6 +1,3 @@
-/*
-* HelloWorld.c - Print out Hello World on Arm system
-*/
 // Define UART Data Register
 volatile unsigned  * Uart_DR = (unsigned int
 *)0x101f1000;
